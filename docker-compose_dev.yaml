@@ -12,6 +12,8 @@ services:
       - ./backend:/backend
     env_file:
       ./env/dev.env
+    depends_on:
+      - db
     networks:
       - development
   frontend:
@@ -24,6 +26,19 @@ services:
       - ./frontend:/frontend
     depends_on:
       - backend
+    networks:
+      - development
+  db:
+    image: mysql:latest
+    ports:
+      - 3308:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=Lince123
+      - MYSQL_DATABASE=deloitte
+      - MYSQL_USER=kenji
+      - MYSQL_PASSWORD=Rabbit123
     networks:
       - development
   nginx:
