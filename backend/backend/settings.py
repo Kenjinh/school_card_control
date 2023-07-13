@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Libs
+    "django_filters",
+    "rest_framework",
+    "markdown",
+    # Apps
+    "school_card",
+    "student",
+    "subject"
 ]
 
 MIDDLEWARE = [
