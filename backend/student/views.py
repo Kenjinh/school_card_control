@@ -39,9 +39,10 @@ class StudentDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
-        queryset = self.get_object(pk=pk)
-        if queryset == Http404:
-            return Http404
+        try:
+            queryset = self.get_object(pk=pk)
+        except Http404:
+            return Response("Objeto não encontrado.", status=status.HTTP_404_NOT_FOUND)
         serializer = StudentSerializer(queryset, data=request.data)
         if serializer.is_valid():
             serializer.save()

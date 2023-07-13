@@ -5,9 +5,6 @@ from .models import Student
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Student
-        fields = '__all__'
 
     def validate_email(self, value):
         if '@' not in value or ('.com' not in value and '.br' not in value):
@@ -24,3 +21,7 @@ class StudentSerializer(serializers.ModelSerializer):
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         instance.save()
         return instance
+
+    class Meta:
+        model = Student
+        fields = '__all__'
