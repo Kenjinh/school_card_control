@@ -1,50 +1,130 @@
 <template>
-  <ul v-if="cards && cards.length">
-      <div v-for="card in cards" v-bind:key="card.id">
-        <p>
-          <a class="link-secondary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseExample" v-bind:href="'\#'+card.id">
-              {{ card.student_name }} - {{ card.delivery_date }}
-          </a>
-        </p>
-        <table v-if="card.grades && card.grades" class="table table-hover table-bordered collapse" v-bind:id="card.id">
-          <thead>
-            <tr>
-              <th class="col">Subject</th>
-              <th class="col">Grade</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="grade in card.grades" v-bind:key="grade.id">
-              <td>{{grade.subject_name}}</td>
-              <td>{{grade.grade}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </ul>
+  <div class="container-fluid text-center pt-4">
+    <div class="row">
+      <ul v-if="cards && cards.length">
+        <div v-for="card in cards" :key="card.id" class="school-card p-4 mt-5 shadow-lg">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th class="col">{{ card.student_name }}</th>
+                <th class="col">{{ card.delivery_date }}</th>
+                <th class="col"><a class="link-primary p-2" @click="editCard(card.id)">Editar</a></th>
+                <th class="col"><a class="link-danger p-2" @click="deleteCard(card.id)">Deletar</a></th>
+              </tr>
+            </thead>
+          </table>
+          <table v-if="card.grades && card.grades" class="table table-hover table-bordered" :id="card.id">
+            <thead>
+              <tr>
+                <th class="col">Subject</th>
+                <th class="col">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="grade in card.grades" :key="grade.id">
+                <td>{{ grade.subject_name }}</td>
+                <td>{{ grade.grade }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ul>
+    </div>
+  </div>
 </template>
+
 <script>
-import axios from 'axios'
+import axios from 'axios';
+
 export default {
   name: 'SchoolCards',
   props: {
-    msg: String
+    msg: String,
   },
   data() {
     return {
       cards: [],
-      errors: []
-    }
+      errors: [],
+      isLoading: false,
+      isAllLoaded: false,
+    };
   },
   created() {
-    axios.get(`http://10.0.4.151:8001/school_card/list/`)
-        .then(response => {
-          // JSON responses are automatically parsed.
-          this.cards = response.data
+    this.fetchData();
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  methods: {
+    fetchData() {
+      axios
+        .get('http://10.0.4.151:8001/school_card/list/')
+        .then((response) => {
+          this.cards = response.data;
         })
-        .catch(e => {
-          this.errors.push(e)
+        .catch((e) => {
+          this.errors.push(e);
+        });
+    },
+    editCard(cardId) {
+      this.$router.push(`/boletim/edit/${cardId}`);
+      console.log('Editar boletim:', cardId);
+    },
+    deleteCard(cardId) {
+      if (confirm('Tem certeza que deseja excluir este boletim?')) {
+        axios
+          .delete(`http://10.0.4.151:8001/school_card/list/${cardId}/`)
+          .then((response) => {
+            if (response.status === 204) {
+              alert('Boletim excluído com sucesso!');
+              window.location.reload();
+            } else {
+              alert('Erro ao excluir o boletim');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            alert('Erro ao excluir o boletim');
+          });
+      }
+    },
+    handleScroll() {
+      if (this.isLoading || this.isAllLoaded) return;
+
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+
+      if (documentHeight - windowHeight - scrollTop < 50) {
+        this.loadMoreCards();
+      }
+    },
+    loadMoreCards() {
+      this.isLoading = true;
+
+      axios
+        .get(
+          `http://10.0.4.151:8001/school_card/list/?offset=${this.cards.length}`
+        )
+        .then((response) => {
+          const newCards = response.data;
+          if (newCards.length === 0) {
+            this.isAllLoaded = true;
+          } else {
+            this.cards = this.cards.concat(newCards);
+          }
+          this.isLoading = false;
         })
-  }
-}
+        .catch((error) => {
+          console.error(error);
+          alert('Erro ao carregar mais cards');
+          this.isLoading = false;
+        });
+    },
+  },
+};
 </script>

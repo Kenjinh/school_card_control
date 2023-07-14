@@ -2,17 +2,22 @@
   <div class="nav-bar bg-black">
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <a class="nav-link active text-light" aria-current="page" href="#">Active</a>
+        <a class="nav-link active text-light" aria-current="page" href="/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-light" href="#">Link</a>
+        <router-link class="nav-link text-light" to="/boletim">Botetim</router-link>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-light" href="#">Link</a>
+        <router-link class="nav-link text-light" to="/aluno">Aluno</router-link>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled text-secondary">Disabled</a>
-      </li>
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-success" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Perfil
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </li>
     </ul>
   </div>
 </template>
@@ -24,5 +29,3 @@ export default {
   },
 }
 </script>
-<style>
-</style>

@@ -1,0 +1,27 @@
+$background: #b8b8b8;
+$secondary-color: #818181;
+$schoolbg: #40b779;
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.router-view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.container-fluid{
+  background-color: $background;
+  flex: 1;
+}
+.nav-bar {
+  border-bottom: solid 2px;
+  border-color: $secondary-color;
+}
+.school-card {
+  background-color: $schoolbg;
+}

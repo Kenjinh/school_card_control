@@ -11,9 +11,9 @@ class GradeSerializer(serializers.ModelSerializer):
         return Grade.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.school_card = validated_data.get('school_card', instance.student)
-        instance.subject = validated_data.get('subject', instance.delivery_date)
-        instance.grade = validated_data.get('grade', instance.student)
+        instance.school_card = validated_data.get('school_card', instance.school_card)
+        instance.subject = validated_data.get('subject', instance.subject)
+        instance.grade = validated_data.get('grade', instance.grade)
         instance.save()
         return instance
 

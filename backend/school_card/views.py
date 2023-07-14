@@ -65,7 +65,10 @@ class SchoolCardDetailAPI(APIView):
 class GradeListAPI(APIView):
 
     def get(self, request):
+        school_card_id = request.query_params.get('school_card')
         queryset = Grade.objects.all()
+        if school_card_id:
+            queryset = queryset.filter(school_card_id=school_card_id)
         serializer = GradeSerializer(queryset, many=True)
         return Response(serializer.data)
 
