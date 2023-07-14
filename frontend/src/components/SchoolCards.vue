@@ -29,6 +29,12 @@
           </table>
         </div>
       </ul>
+      <div v-if="isLoading" class="text-center mt-3">
+        <span class="spinner-border"></span>
+      </div>
+      <div v-if="!isAllLoaded" class="text-center mt-3">
+        <button class="btn btn-primary" @click="loadMoreCards">Carregar Mais</button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,21 +53,22 @@ export default {
       errors: [],
       isLoading: false,
       isAllLoaded: false,
+      offset: 0,
+      limit: 10,
     };
   },
   created() {
     this.fetchData();
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
     fetchData() {
       axios
-        .get('http://10.0.4.151:8001/school_card/list/')
+        .get(`http://10.0.4.151:8001/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
         .then((response) => {
           this.cards = response.data;
+          if (response.data.length < this.limit) {
+            this.isAllLoaded = true;
+          }
         })
         .catch((e) => {
           this.errors.push(e);
@@ -78,7 +85,7 @@ export default {
           .then((response) => {
             if (response.status === 204) {
               alert('Boletim excluído com sucesso!');
-              window.location.reload();
+              this.fetchData();
             } else {
               alert('Erro ao excluir o boletim');
             }
@@ -89,33 +96,18 @@ export default {
           });
       }
     },
-    handleScroll() {
-      if (this.isLoading || this.isAllLoaded) return;
-
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop =
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        document.body.scrollTop;
-
-      if (documentHeight - windowHeight - scrollTop < 50) {
-        this.loadMoreCards();
-      }
-    },
     loadMoreCards() {
       this.isLoading = true;
+      this.offset += this.limit;
 
       axios
-        .get(
-          `http://10.0.4.151:8001/school_card/list/?offset=${this.cards.length}`
-        )
+        .get(`http://10.0.4.151:8001/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
         .then((response) => {
           const newCards = response.data;
           if (newCards.length === 0) {
             this.isAllLoaded = true;
           } else {
-            this.cards = this.cards.concat(newCards);
+            this.cards = [...this.cards, ...newCards];
           }
           this.isLoading = false;
         })
