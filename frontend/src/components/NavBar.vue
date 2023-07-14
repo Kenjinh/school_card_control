@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-bar bg-black">
+  <div class="nav-bar bg-black fixed-top">
     <ul class="nav justify-content-center">
       <li class="nav-item">
         <a class="nav-link active text-light" aria-current="page" href="/">Home</a>
