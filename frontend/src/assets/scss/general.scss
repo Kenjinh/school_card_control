@@ -1,6 +1,7 @@
-$background: #b8b8b8;
+$imgPath: "../img";
+$background: url('#{$imgPath}/background.jpg');
 $secondary-color: #818181;
-$schoolbg: #40b779;
+$schoolbg: #4087b7;
 #app {
   display: flex;
   flex-direction: column;
@@ -15,8 +16,14 @@ $schoolbg: #40b779;
 }
 
 .container-fluid{
-  background-color: $background;
+  background: $background no-repeat;
+  background-size: 100% 100%;
   flex: 1;
+  margin-top: 2em;
+}
+.container-fluid form{
+  background-color: $schoolbg;
+  border-radius: 10px;
 }
 .nav-bar {
   border-bottom: solid 2px;
@@ -24,4 +31,11 @@ $schoolbg: #40b779;
 }
 .school-card {
   background-color: $schoolbg;
+  border-radius: 10px;
+}
+.school-card table .index .bold{
+  font-weight: bold;
+}
+.school-card table .index p {
+  margin: 5px;
 }

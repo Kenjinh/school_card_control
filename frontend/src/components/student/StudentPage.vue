@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid text-center py-4 px-5 mx-auto">
-    <h1 class="text-light">Adicionar Aluno</h1>
-    <form @submit.prevent="createStudent" class="w-50 m-auto">
+    <form @submit.prevent="createStudent" class="w-50 m-auto p-5">
       <div class="mb-3">
         <label class="form-label text-light" for="name">Nome:</label>
         <input class="form-control" type="text" id="name" v-model="student.name" required>
@@ -15,7 +14,7 @@
         <input class="form-control" type="date" id="birth_date" v-model="student.birth_date" required>
       </div>
 
-      <button class="btn btn-light" type="submit">Criar Aluno</button>
+      <button class="btn btn-outline-light fw-bold" type="submit">Criar</button>
     </form>
   </div>
 </template>
@@ -40,7 +39,7 @@ export default {
   methods: {
     async createStudent() {
       try {
-        const response = await axios.post('http://10.0.4.151:8001/student/list/', this.student);
+        const response = await axios.post('http://localhost/api/student/list/', this.student);
 
         if (response.status === 201) {
           alert('Aluno criado com sucesso!');

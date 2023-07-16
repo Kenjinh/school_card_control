@@ -3,21 +3,29 @@
     <div class="row">
       <ul v-if="cards && cards.length">
         <div v-for="card in cards" :key="card.id" class="school-card p-4 mt-5 shadow-lg">
-          <table class="table table-hover table-bordered">
-            <thead>
+          <table class="table table-sm">
+            <tbody>
               <tr>
-                <th class="col">{{ card.student_name }}</th>
-                <th class="col">{{ card.delivery_date }}</th>
-                <th class="col"><a class="link-primary p-2" @click="editCard(card.id)">Editar</a></th>
-                <th class="col"><a class="link-danger p-2" @click="deleteCard(card.id)">Deletar</a></th>
+                <td>
+                  <div class="index d-inline-flex justify-content-between">
+                    <p class="bold">Nome:</p>
+                    <p>{{ card.student_name }}</p>
+                  </div>
+                </td>
+                <td>
+                  <div class="index d-inline-flex justify-content-between">
+                    <p class="bold">Data da entrega:</p>
+                    <p>{{ card.delivery_date }}</p>
+                  </div>
+                </td>
               </tr>
-            </thead>
+            </tbody>
           </table>
           <table v-if="card.grades && card.grades" class="table table-hover table-bordered" :id="card.id">
             <thead>
               <tr>
-                <th class="col">Subject</th>
-                <th class="col">Grade</th>
+                <th class="col">Disciplinas</th>
+                <th class="col">Nota</th>
               </tr>
             </thead>
             <tbody>
@@ -27,13 +35,15 @@
               </tr>
             </tbody>
           </table>
+          <a class="m-1 p-2 btn btn-light" role="btn" @click="editCard(card.id)">Editar</a>
+          <a class="m-1 p-2 btn btn-danger" role="btn" @click="deleteCard(card.id)">Deletar</a>
         </div>
       </ul>
       <div v-if="isLoading" class="text-center mt-3">
         <span class="spinner-border"></span>
       </div>
       <div v-if="!isAllLoaded" class="text-center mt-3">
-        <button class="btn btn-primary" @click="loadMoreCards">Carregar Mais</button>
+        <button class="btn btn-outline-info" @click="loadMoreCards">Carregar Mais</button>
       </div>
     </div>
   </div>
@@ -63,7 +73,7 @@ export default {
   methods: {
     fetchData() {
       axios
-        .get(`http://10.0.4.151:8001/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
+        .get(`http://localhost/api/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
         .then((response) => {
           this.cards = response.data;
           if (response.data.length < this.limit) {
@@ -81,7 +91,7 @@ export default {
     deleteCard(cardId) {
       if (confirm('Tem certeza que deseja excluir este boletim?')) {
         axios
-          .delete(`http://10.0.4.151:8001/school_card/list/${cardId}/`)
+          .delete(`http://localhost/api/school_card/list/${cardId}/`)
           .then((response) => {
             if (response.status === 204) {
               alert('Boletim excluído com sucesso!');
@@ -101,7 +111,7 @@ export default {
       this.offset += this.limit;
 
       axios
-        .get(`http://10.0.4.151:8001/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
+        .get(`http://localhost/api/school_card/list/?offset=${this.offset}&limit=${this.limit}`)
         .then((response) => {
           const newCards = response.data;
           if (newCards.length === 0) {

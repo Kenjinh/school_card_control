@@ -1,7 +1,6 @@
 <template>
-  <div class="container-fluid text-center py-4 px-5 mx-auto">
-    <h1 class="text-light">Adicionar Boletim e Notas</h1>
-    <form @submit.prevent="createSchoolCard" class="w-50 m-auto">
+  <div class="container-fluid text-center py-4 px-5">
+    <form @submit.prevent="createSchoolCard" class="row w-50 mx-auto p-5">
       <div class="mb-3">
         <label class="form-label text-light" for="student">Aluno:</label>
         <select class="form-select" id="student" v-model="selectedStudent" required>
@@ -14,16 +13,17 @@
         <input class="form-control" type="date" id="delivery_date" v-model="selectedDeliveryDate" required>
       </div>
       <div class="mb-3">
-        <h2 class="text-light">Notas</h2>
+        <p class="fs-5 fw-bold text-light text-decoration-underline">Notas</p>
         <div v-for="subject in subjects" :key="subject.id">
-          <div class="mb-3">
+          <div class="mb-3 col-12">
             <label class="form-label text-light" :for="'grade_' + subject.id">{{ subject.name }}:</label>
             <input min="0" max="10" step="0.01" class="form-control" :id="'grade_' + subject.id" type="number" v-model="grades[subject.id]" required>
           </div>
         </div>
       </div>
-
-      <button class="btn btn-light" type="submit">Criar Boletim</button>
+      <div class="mx-auto">
+        <button class="btn btn-outline-light fw-bold" type="submit">Criar</button>
+      </div>
     </form>
   </div>
 </template>
@@ -44,10 +44,10 @@ export default {
   },
   async mounted() {
     try {
-      const studentResponse = await axios.get('http://10.0.4.151:8001/student/list/');
+      const studentResponse = await axios.get('http://localhost/api//student/list/');
       this.students = studentResponse.data;
 
-      const subjectResponse = await axios.get('http://10.0.4.151:8001/subject/list/');
+      const subjectResponse = await axios.get('http://localhost/api/subject/list/');
       this.subjects = subjectResponse.data;
 
       this.subjects.forEach((subject) => {
@@ -61,7 +61,7 @@ export default {
   methods: {
     async createSchoolCard() {
       try {
-        const schoolCardResponse = await axios.post('http://10.0.4.151:8001/school_card/list/', {
+        const schoolCardResponse = await axios.post('http://localhost/api/school_card/list/', {
           student: this.selectedStudent,
           delivery_date: this.selectedDeliveryDate,
         });
@@ -74,7 +74,7 @@ export default {
         const schoolCardId = schoolCardResponse.data.id;
 
         const gradePromises = Object.keys(this.grades).map((subjectId) => {
-          return axios.post('http://10.0.4.151:8001/school_card/grade/list/', {
+          return axios.post('http://localhost/api/school_card/grade/list/', {
             school_card: schoolCardId,
             subject: subjectId,
             grade: this.grades[subjectId],

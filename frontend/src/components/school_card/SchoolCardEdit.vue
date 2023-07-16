@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid text-center pt-4">
-    <h1 class="text-light">Editar Boletim</h1>
-    <form @submit.prevent="updateSchoolCard" class="w-50 m-auto">
+    <form @submit.prevent="updateSchoolCard" class="w-50 m-auto p-5">
       <div class="mb-3">
         <label class="form-label text-light" for="student">Aluno:</label>
         <select class="form-select" id="student" v-model="boletimData.student" required>
@@ -23,21 +22,8 @@
         </div>
       </div>
 
-      <button class="btn btn-light" type="submit">Atualizar Boletim</button>
+      <button class="btn btn-outline-light" type="submit">Atualizar Boletim</button>
     </form>
-<!--    <form @submit.prevent="createGrade" class="w-50 m-auto">-->
-<!--      <h2 class="text-light">Adicionar Nova Grade</h2>-->
-<!--      <div class="mb-3">-->
-<!--        <h2 class="text-light">Notas</h2>-->
-<!--        <div v-for="subject in subjects" :key="subject.id">-->
-<!--          <div class="mb-3">-->
-<!--            <label class="form-label text-light" :for="'grade_' + subject.id">{{ subject.name }}:</label>-->
-<!--            <input min="0" max="10" step="0.01" class="form-control" :id="'grade_' + subject.id" type="number" required>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <button class="btn btn-primary" type="submit">Criar Grade</button>-->
-<!--    </form>-->
       <div v-if="!getAvailableSubjects">
         <form @submit.prevent="createGrade" class="w-50 m-auto">
           <h2 class="text-light">Adicionar Nova Grade</h2>
@@ -52,7 +38,7 @@
             <input class="form-control" id="new_grade_value" type="number" min="0" max="10" step="0.01"
                    v-model="newGrade.grade" required>
           </div>
-          <button class="btn btn-primary" type="submit">Criar Grade</button>
+          <button class="btn btn-outline-light" type="submit">Criar Grade</button>
         </form>
       </div>
     </div>
@@ -80,7 +66,7 @@ export default {
   },
   async mounted() {
     try {
-      const subjectResponse = await axios.get('http://10.0.4.151:8001/subject/list/');
+      const subjectResponse = await axios.get('http://localhost/api/subject/list/');
       this.subjects = subjectResponse.data;
     } catch (error) {
       console.error(error);
@@ -92,7 +78,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     const cardId = to.params.cardId;
-    axios.get(`http://10.0.4.151:8001/school_card/list/${cardId}`)
+    axios.get(`http://localhost/api/school_card/list/${cardId}/`)
         .then(response => {
           const boletimData = response.data;
           next(vm => {
@@ -116,7 +102,7 @@ export default {
   },
   methods: {
     fetchData() {
-      axios.get('http://10.0.4.151:8001/student/list/')
+      axios.get('http://localhost/api/student/list/')
           .then(response => {
             this.students = response.data;
           })
@@ -124,7 +110,7 @@ export default {
             console.error(error);
           });
 
-      axios.get('http://10.0.4.151:8001/subject/list/')
+      axios.get('http://localhost/api/subject/list/')
           .then(response => {
             this.subjects = response.data;
           })
@@ -140,9 +126,9 @@ export default {
           delivery_date: this.boletimData.delivery_date,
           grades: this.boletimData.grades
         };
-        await axios.put(`http://10.0.4.151:8001/school_card/list/${cardId}/`, boletimData);
+        await axios.put(`http://localhost/api/school_card/list/${cardId}/`, boletimData);
         for (let grade of this.boletimData.grades) {
-          await axios.put(`http://10.0.4.151:8001/school_card/grade/list/${grade.id}/`, grade);
+          await axios.put(`http://localhost/api/school_card/grade/list/${grade.id}/`, grade);
         }
 
         alert('Boletim atualizado com sucesso!');
@@ -159,7 +145,7 @@ export default {
         grade: this.newGrade.grade
       };
 
-      axios.post('http://10.0.4.151:8001/school_card/grade/list/', gradeData)
+      axios.post('http://localhost/api/school_card/grade/list/', gradeData)
         .then(response => {
           if (response.status === 201) {
             console.log('Grade criada com sucesso!');
@@ -181,7 +167,7 @@ export default {
       return subject ? subject.name : '';
     },
     getGrades(cardId) {
-      return axios.get(`http://10.0.4.151:8001/school_card/grade/list/?school_card=${cardId}`)
+      return axios.get(`http://localhost/api/school_card/grade/list/?school_card=${cardId}`)
           .then(response => {
             console.log(response.data);
             return response.data;

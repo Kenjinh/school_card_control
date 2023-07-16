@@ -1,10 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router';
-import StudentPage  from './components/StudentPage.vue';
-import SchoolCards from "@/components/SchoolCards";
-import SchoolCardCreate from "@/components/SchoolCardCreate";
-import SchoolCardEdit from "@/components/SchoolCardEdit";
+import StudentPage  from '@/components/student/StudentPage.vue';
+import SchoolCards from "@/components/school_card/SchoolCards";
+import SchoolCardCreate from "@/components/school_card/SchoolCardCreate";
+import SchoolCardEdit from "@/components//school_card/SchoolCardEdit";
+import SubjectPage from "@/components/subject/SubjectPage"
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 
@@ -28,6 +29,12 @@ const routes = [
     path: '/boletim/edit/:cardId',
     name: 'Editar Boletim',
     component: SchoolCardEdit
+  },
+  {
+    path: '/materia/create',
+    name: 'Criar Matéria',
+    component: SubjectPage
+
   }
 ];
 

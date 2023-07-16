@@ -9,7 +9,7 @@
 
 <script>
 import '@/assets/scss/general.scss'
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/general/NavBar";
 export default {
   name: 'App',
   components: {

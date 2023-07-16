@@ -9,7 +9,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./backend:/backend
+      - ./backend:/app
     env_file:
       ./env/dev.env
     depends_on:
@@ -21,9 +21,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - 8002:8080
     volumes:
-      - ./frontend:/frontend
+      - ./frontend:/app
     depends_on:
       - backend
     networks:
